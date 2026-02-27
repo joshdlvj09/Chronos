@@ -1,0 +1,325 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: url(../src/img/background3.png);
+    background-repeat: no-repeat;  
+    background-size: cover;        
+    background-position: center;  
+    background-attachment: fixed; 
+    color: #e5e7eb; 
+    line-height: 1.6;
+    padding: 20px;
+    min-height: 100vh;            
+}
+
+header {
+    text-align: center;
+    padding: 2.5rem 0;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    color: #d4af37; 
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+    font-family: "Betania Patmos In", cursive;
+    font-weight: 400;
+    text-shadow: 2px 2px 12px rgba(212, 175, 55, 0.4);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+nav a {
+    color: #9ca3af;
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #d4af37;
+}
+
+section {
+    max-width: 800px;
+    margin: 0 auto 3rem auto;
+    background: #0a0a0a;
+    padding: 2.5rem;
+    border-radius: 15px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+}
+
+fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+h2 {
+    margin-bottom: 2rem;
+    color: #f3f4f6;
+    border-left: 4px solid #d4af37;
+    padding-left: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+div {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #d4af37; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+input[type="text"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    background: #171717; 
+    border: 1px solid #262626;
+    border-radius: 8px;
+    color: #ffffff;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+    border-color: #d4af37; 
+}
+
+.radio-group {
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+    margin: 2rem 0;
+}
+
+.hidden-radio {
+    display: none;
+}
+
+.icon-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 20px;
+    width: 110px;
+    height: 110px;
+    border-radius: 12px;
+    border: 1px solid #262626;
+    background: #111111;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.radio-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    opacity: 0.4;
+    filter: sepia(1) saturate(0.5) brightness(0.8);
+    transition: all 0.3s ease;
+}
+
+.hidden-radio:checked + .icon-label {
+    border-color: #d4af37;
+    background: rgba(212, 175, 55, 0.05);
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+    transform: translateY(-5px);
+}
+
+.hidden-radio:checked + .icon-label .radio-icon {
+    opacity: 1;
+    filter: none; 
+}
+
+.filtros {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.filter-btn {
+    background: #111111;
+    color: #9ca3af;
+    border: 1px solid #262626;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover, .filter-btn.active {
+    border-color: #d4af37;
+    color: #d4af37;
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.grid-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.media-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #0a0a0a;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 15px;
+    padding: 1.5rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.media-card:hover {
+    border-color: #d4af37;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 1.5rem;
+    border-top: 1px solid #171717;
+    padding-top: 1rem;
+}
+
+.action-btn {
+    background: #111111;
+    border: 1px solid #262626;
+    color: #9ca3af;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    border-color: #d4af37;
+    color: #d4af37;
+}
+
+.action-btn.delete:hover {
+    border-color: #ef4444; 
+    color: #ef4444;
+}
+
+
+.card-icon {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    display: block;
+}
+
+.card-info h3 {
+    color: #d4af37;
+    font-family: "Betania Patmos In", cursive;
+    margin-bottom: 8px;
+}
+
+.card-info img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    display: block;
+}
+
+.card-info p {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.status-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 0.65rem;
+    padding: 4px 10px;
+    border-radius: 5px;
+    background: rgba(212, 175, 55, 0.1);
+    color: #d4af37;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    text-transform: uppercase;
+    font-weight: bold;
+    z-index: 10;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+    color: #000; 
+    border: none;
+    border-radius: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(184, 134, 11, 0.5);
+    background: linear-gradient(135deg, #e5c158 0%, #d4af37 100%);
+}
+
+footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #404040;
+    margin-top: 4rem;
+    letter-spacing: 1px;
+}

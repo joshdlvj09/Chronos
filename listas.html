@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronos - Mi Lista</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Betania+Patmos+In&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1>Chronos</h1>
+        <nav>
+            <ul>
+                <li><a href="/registro_contenido.html">+ Agregar</a></li>
+                <li><a href="lista.html">Mi Lista</a></li>
+                <li><a href="#">Configuración</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="lista-section">
+            <div class="lista-header">
+                <h2>Contenido Guardado</h2>
+                <div class="filtros">
+                    <button class="filter-btn active">Todos</button>
+                    <button class="filter-btn">Películas</button>
+                    <button class="filter-btn">Series</button>
+                    <button class="filter-btn">Libros</button>
+                </div>
+            </div>
+
+            <div class="grid-lista" id="contenedor-lista">
+                <article class="media-card">
+                    <div class="card-badge status-viendo">En progreso</div>
+                    <div class="card-content">
+                        <img src="./src/img/Inception.jpeg" alt="Cine" class="card-icon">
+                        <div class="card-info">
+                            <h3>Inception</h3>
+                            <p>Revisar la escena del tótem al final.</p>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn edit">✏️</button>
+                        <button class="action-btn delete">🗑️</button>
+                    </div>
+                </article>
+
+                <article class="media-card">
+                    <div class="card-badge status-pendiente">Pendiente</div>
+                    <div class="card-content">
+                        <img src="./src/img/Cien años de soledad - Gabriel García Márquez.jpeg" alt="Libro" class="card-icon">
+                        <div class="card-info">
+                            <h3>Cien años de soledad</h3>
+                            <p>Clásico de García Márquez.</p>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn edit">✏️</button>
+                        <button class="action-btn delete">🗑️</button>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+
+</body>
+</html>

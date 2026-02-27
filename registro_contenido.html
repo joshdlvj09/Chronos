@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronos</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Betania+Patmos+In&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1>Chronos</h1>
+        <nav>
+            <ul>
+                <li><a href="/registro_contenido.html">+ Agregar</a></li>
+                <li><a href="/listas.html">Mi Lista</a></li>
+                <li><a href="#">Configuración</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Registrar Nuevo Contenido</h2>
+            <form id="media-form">
+                <fieldset>
+                    
+                    <div>
+                        <label for="titulo">Título:</label>
+                        <input type="text" id="titulo" name="titulo" placeholder="Nombre de la película, libro o serie">
+                    </div>
+
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="peli" name="tipo" value="pelicula" class="hidden-radio">
+                            <label for="peli" class="icon-label">
+                                <img src="./src/img/logo_cine.jpeg" alt="Película" class="radio-icon">
+                                <span class="text">Película</span>
+                            </label>
+                        </div>
+
+                        <div class="radio-option">
+                            <input type="radio" id="serie" name="tipo" value="serie" class="hidden-radio">
+                            <label for="serie" class="icon-label">
+                                <img src="./src/img/logo_serie.jpeg" alt="Serie" class="radio-icon">
+                                <span class="text">Serie</span>
+                            </label>
+                        </div>
+                        
+                        <div class="radio-option">
+                            <input type="radio" id="libro" name="tipo" value="libro" class="hidden-radio">
+                            <label for="libro" class="icon-label">
+                                <img src="./src/img/logo_libro.jpeg" alt="Libro" class="radio-icon">
+                                <span class="text">Libro</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="estado">Estado:</label>
+                        <select id="estado" name="estado" required>
+                            <option value="" disabled selected>Selecciona un estado</option>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="viendo">En progreso</option>
+                            <option value="terminado">Terminado</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="notes">Mis Notas:</label>
+                        <textarea id="notes" name="notas" rows="4" placeholder="Escribe aquí tus comentarios..."></textarea>
+                    </div>
+
+                    <button type="submit">Guardar en la lista</button>
+                </fieldset>
+            </form>
+        </section>
+    </main>
+
+
+</body>
+</html>
