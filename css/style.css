@@ -325,23 +325,23 @@ footer {
 }
 
 @media (max-width: 768px) {
-    /* Ajuste general para evitar desbordamientos laterales */
+
     body {
         padding: 10px;
         overflow-x: hidden;
     }
 
     h1 {
-        font-size: 3rem; /* Reducido para que no rompa el header */
+        font-size: 3rem; 
     }
 
     section {
         padding: 1.2rem;
         margin: 0.5rem auto;
-        width: 100%; /* Asegura que no sea más ancho que la pantalla */
+        width: 100%; 
     }
 
-    /* Corrección para los botones de FILTROS (ahora se pueden scrollear si no caben) */
+
     .filtros {
         overflow-x: auto;
         white-space: nowrap;
@@ -351,10 +351,10 @@ footer {
     }
 
     .filter-btn {
-        flex: 0 0 auto; /* Evita que los botones se aplasten */
+        flex: 0 0 auto; 
     }
 
-    /* Corrección para la selección de iconos (Película, Serie, Libro) */
+
     .radio-group {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
@@ -367,19 +367,18 @@ footer {
         padding: 10px;
     }
 
-    /* Corrección para la LISTA y TARJETAS */
+ 
     .grid-lista {
         grid-template-columns: 1fr; 
         gap: 15px;
     }
 
     .card-info img, .card-icon {
-        height: 200px; /* Reducido para que se vea mejor en vertical */
+        height: 200px; 
     }
 
-    /* Corrección para el PERFIL (Evita que las stats se amontonen) */
     .estadisticas-grid {
-        grid-template-columns: 1fr; /* Una stat debajo de otra en pantallas muy pequeñas */
+        grid-template-columns: 1fr; 
         gap: 10px;
     }
 
