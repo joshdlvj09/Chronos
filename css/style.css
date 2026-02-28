@@ -325,49 +325,77 @@ footer {
 }
 
 @media (max-width: 768px) {
+    /* Ajuste general para evitar desbordamientos laterales */
+    body {
+        padding: 10px;
+        overflow-x: hidden;
+    }
 
     h1 {
-        font-size: 2.5rem;
+        font-size: 3rem; /* Reducido para que no rompa el header */
     }
-
 
     section {
-        padding: 1.5rem;
-        margin: 1rem;
+        padding: 1.2rem;
+        margin: 0.5rem auto;
+        width: 100%; /* Asegura que no sea más ancho que la pantalla */
     }
 
+    /* Corrección para los botones de FILTROS (ahora se pueden scrollear si no caben) */
+    .filtros {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 10px;
+        justify-content: flex-start;
+        gap: 8px;
+    }
 
+    .filter-btn {
+        flex: 0 0 auto; /* Evita que los botones se aplasten */
+    }
+
+    /* Corrección para la selección de iconos (Película, Serie, Libro) */
     .radio-group {
-        flex-wrap: wrap; 
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
         gap: 10px;
     }
 
     .icon-label {
-        width: 90px;
-        height: 90px;
+        width: 100%;
+        height: 100px;
         padding: 10px;
     }
 
-    .radio-icon {
-        width: 35px;
-        height: 35px;
-    }
-
-
+    /* Corrección para la LISTA y TARJETAS */
     .grid-lista {
         grid-template-columns: 1fr; 
         gap: 15px;
     }
 
-
-    .card-info img {
-        height: 250px; 
+    .card-info img, .card-icon {
+        height: 200px; /* Reducido para que se vea mejor en vertical */
     }
 
+    /* Corrección para el PERFIL (Evita que las stats se amontonen) */
+    .estadisticas-grid {
+        grid-template-columns: 1fr; /* Una stat debajo de otra en pantallas muy pequeñas */
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 1rem;
+    }
+
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
 
     nav ul {
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
         align-items: center;
     }
 }
