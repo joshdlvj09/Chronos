@@ -25,7 +25,7 @@ header {
 
 h1 {
     color: #d4af37; 
-    font-size: 3.5rem;
+    font-size: 5.5rem;
     margin-bottom: 0.5rem;
     font-family: "Betania Patmos In", cursive;
     font-weight: 400;
@@ -370,4 +370,110 @@ footer {
         gap: 10px;
         align-items: center;
     }
+}
+.perfil-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.avatar-container {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1rem;
+    border: 2px solid #d4af37;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-container i {
+    font-size: 2.5rem;
+    color: #d4af37;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bio {
+    color: #9ca3af;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.estadisticas-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 2.5rem;
+}
+
+.stat-card {
+    background: #111;
+    border: 1px solid #262626;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: #d4af37;
+}
+
+.stat-number {
+    display: block;
+    font-size: 1.8rem;
+    color: #d4af37;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #737373;
+    letter-spacing: 1px;
+}
+
+.perfil-info h3 {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: #f3f4f6;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #171717;
+}
+
+.info-item label {
+    color: #d4af37;
+    margin-bottom: 0;
+}
+
+.btn-edit-perfil {
+    margin-top: 2rem;
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid #d4af37;
+    color: #d4af37;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-edit-perfil:hover {
+    background: #d4af37;
+    color: #000;
 }
