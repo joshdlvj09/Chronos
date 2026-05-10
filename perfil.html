@@ -20,6 +20,7 @@
                 <li><a href="index.html">+ Agregar</a></li>
                 <li><a href="listas.html">Mi Lista</a></li>
                 <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="log_in.html" id="btn-cerrar-sesion" class="nav-logout">Cerrar Sesión</a></li>
             </ul>
         </nav>
     </header>
@@ -30,21 +31,21 @@
                 <div class="avatar-container">
                     <i class="fa-solid fa-bolt-lightning"></i>
                 </div>
-                <h2>Josh</h2>
-                <p class="bio">...</p>
+                <h2 id="perfil-nombre">—</h2>
+                <p class="bio" id="perfil-email">—</p>
             </div>
 
             <div class="estadisticas-grid">
                 <div class="stat-card">
-                    <span class="stat-number">1</span>
+                    <span class="stat-number" id="stat-peliculas">—</span>
                     <span class="stat-label">Películas</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-number">1</span>
+                    <span class="stat-number" id="stat-series">—</span>
                     <span class="stat-label">Series</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-number">1</span>
+                    <span class="stat-number" id="stat-libros">—</span>
                     <span class="stat-label">Libros</span>
                 </div>
             </div>
@@ -53,17 +54,160 @@
                 <h3>Información de la Cuenta</h3>
                 <div class="info-item">
                     <label>Nombre de Usuario:</label>
-                    <span>Josh</span>
+                    <span id="info-nombre">—</span>
                 </div>
                 <div class="info-item">
                     <label>Correo:</label>
-                    <span>josh@ejemplo.com</span>
+                    <span id="info-email">—</span>
                 </div>
-                <button type="submit" class="btn-edit-perfil">Editar Perfil</button>
+                <button type="button" class="btn-edit-perfil" id="btn-editar-perfil">Editar Perfil</button>
+            </div>
+
+            <!-- FORMULARIO DE EDICIÓN (oculto por defecto) -->
+            <div id="form-editar-perfil" class="auth-hidden" style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 1.5rem; color: #f3f4f6;">Actualizar Datos</h3>
+                <form id="form-perfil">
+                    <fieldset>
+                        <div>
+                            <label for="edit-nombre">Nombre:</label>
+                            <input type="text" id="edit-nombre" placeholder="Tu nombre">
+                        </div>
+                        <div>
+                            <label for="edit-email">Correo:</label>
+                            <input type="text" id="edit-email" placeholder="tu@correo.com">
+                        </div>
+                        <div>
+                            <label for="edit-password">Nueva contraseña (opcional):</label>
+                            <input type="password" id="edit-password" placeholder="Dejar vacío para no cambiar">
+                        </div>
+                        <p id="perfil-error" class="auth-error"></p>
+                        <p id="perfil-exito" class="auth-exito"></p>
+                        <button type="submit" id="btn-guardar-perfil">Guardar Cambios</button>
+                        <button type="button" id="btn-cancelar-perfil" class="btn-cancelar">Cancelar</button>
+                    </fieldset>
+                </form>
             </div>
         </section>
     </main>
 
+    <script>
+        const API = 'https://backend-chronos.onrender.com';
+
+        if (!localStorage.getItem('token')) {
+            window.location.href = 'log_in.html';
+        }
+
+        const token = localStorage.getItem('token');
+
+        // Cerrar sesión
+        document.getElementById('btn-cerrar-sesion').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('nombre');
+            localStorage.removeItem('email');
+            window.location.href = 'log_in.html';
+        });
+
+        // Cargar datos del perfil
+        async function cargarPerfil() {
+            try {
+                const [resPerfil, resMedia] = await Promise.all([
+                    fetch(`${API}/api/usuarios/perfil`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }),
+                    fetch(`${API}/api/media`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    })
+                ]);
+
+                const perfil = await resPerfil.json();
+                const media = await resMedia.json();
+
+                // Mostrar datos personales
+                document.getElementById('perfil-nombre').textContent = perfil.nombre;
+                document.getElementById('perfil-email').textContent = perfil.email;
+                document.getElementById('info-nombre').textContent = perfil.nombre;
+                document.getElementById('info-email').textContent = perfil.email;
+
+                // Pre-rellenar el form de edición
+                document.getElementById('edit-nombre').value = perfil.nombre;
+                document.getElementById('edit-email').value = perfil.email;
+
+                // Contar estadísticas
+                const peliculas = media.filter(m => m.tipo === 'pelicula').length;
+                const series    = media.filter(m => m.tipo === 'serie').length;
+                const libros    = media.filter(m => m.tipo === 'libro').length;
+                document.getElementById('stat-peliculas').textContent = peliculas;
+                document.getElementById('stat-series').textContent = series;
+                document.getElementById('stat-libros').textContent = libros;
+
+            } catch (err) {
+                console.error('Error al cargar perfil:', err);
+            }
+        }
+
+        // Mostrar / ocultar formulario de edición
+        document.getElementById('btn-editar-perfil').addEventListener('click', function() {
+            document.getElementById('form-editar-perfil').classList.remove('auth-hidden');
+            this.style.display = 'none';
+        });
+
+        document.getElementById('btn-cancelar-perfil').addEventListener('click', function() {
+            document.getElementById('form-editar-perfil').classList.add('auth-hidden');
+            document.getElementById('btn-editar-perfil').style.display = '';
+            document.getElementById('perfil-error').textContent = '';
+            document.getElementById('perfil-exito').textContent = '';
+        });
+
+        // Guardar cambios de perfil
+        document.getElementById('form-perfil').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-guardar-perfil');
+            const errorEl = document.getElementById('perfil-error');
+            const exitoEl = document.getElementById('perfil-exito');
+            errorEl.textContent = '';
+            exitoEl.textContent = '';
+            btn.textContent = 'Guardando...';
+            btn.disabled = true;
+
+            const body = {
+                nombre: document.getElementById('edit-nombre').value.trim(),
+                email: document.getElementById('edit-email').value.trim(),
+            };
+            const nuevaPass = document.getElementById('edit-password').value;
+            if (nuevaPass) body.password = nuevaPass;
+
+            try {
+                const res = await fetch(`${API}/api/usuarios/perfil`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errorEl.textContent = data.mensaje || 'Error al actualizar';
+                } else {
+                    // Actualizar token y localStorage con nuevos datos
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('nombre', data.nombre);
+                    localStorage.setItem('email', data.email);
+                    exitoEl.textContent = 'Perfil actualizado correctamente.';
+                    cargarPerfil();
+                }
+            } catch (err) {
+                errorEl.textContent = 'No se pudo conectar con el servidor';
+            }
+
+            btn.textContent = 'Guardar Cambios';
+            btn.disabled = false;
+        });
+
+        cargarPerfil();
+    </script>
 
 </body>
 </html>

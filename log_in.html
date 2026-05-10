@@ -1,11 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log In</title>
+    <title>Chronos - Acceso</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Betania+Patmos+In&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="shortcut icon" href="./src/img/logo_cine.jpeg" type="image/jpg">
 </head>
 <body>
-    
+
+    <header>
+        <h1>Chronos</h1>
+    </header>
+
+    <main>
+
+        <!-- PANEL DE LOGIN -->
+        <section id="panel-login">
+            <h2>Iniciar Sesión</h2>
+            <form id="form-login">
+                <fieldset>
+                    <div>
+                        <label for="login-email">Correo:</label>
+                        <input type="text" id="login-email" name="email" placeholder="tu@correo.com">
+                    </div>
+                    <div>
+                        <label for="login-password">Contraseña:</label>
+                        <input type="password" id="login-password" name="password" placeholder="••••••••">
+                    </div>
+                    <p id="login-error" class="auth-error"></p>
+                    <button type="submit" id="btn-login">Entrar</button>
+                </fieldset>
+            </form>
+            <p class="auth-switch">
+                ¿No tienes cuenta?
+                <a href="#" id="ir-a-registro">Regístrate aquí</a>
+            </p>
+        </section>
+
+        <!-- PANEL DE REGISTRO -->
+        <section id="panel-registro" class="auth-hidden">
+            <h2>Crear Cuenta</h2>
+            <form id="form-registro">
+                <fieldset>
+                    <div>
+                        <label for="reg-nombre">Nombre:</label>
+                        <input type="text" id="reg-nombre" name="nombre" placeholder="Tu nombre">
+                    </div>
+                    <div>
+                        <label for="reg-email">Correo:</label>
+                        <input type="text" id="reg-email" name="email" placeholder="tu@correo.com">
+                    </div>
+                    <div>
+                        <label for="reg-password">Contraseña:</label>
+                        <input type="password" id="reg-password" name="password" placeholder="Mínimo 6 caracteres">
+                    </div>
+                    <p id="registro-error" class="auth-error"></p>
+                    <button type="submit" id="btn-registro">Crear Cuenta</button>
+                </fieldset>
+            </form>
+            <p class="auth-switch">
+                ¿Ya tienes cuenta?
+                <a href="#" id="ir-a-login">Inicia sesión</a>
+            </p>
+        </section>
+
+    </main>
+
+    <script>
+        const API = 'https://backend-chronos.onrender.com';
+
+        // Si ya hay sesión activa, redirigir directo a la app
+        if (localStorage.getItem('token')) {
+            window.location.href = 'index.html';
+        }
+
+        // Alternar entre paneles
+        document.getElementById('ir-a-registro').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('panel-login').classList.add('auth-hidden');
+            document.getElementById('panel-registro').classList.remove('auth-hidden');
+        });
+
+        document.getElementById('ir-a-login').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('panel-registro').classList.add('auth-hidden');
+            document.getElementById('panel-login').classList.remove('auth-hidden');
+        });
+
+        // LOGIN
+        document.getElementById('form-login').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-login');
+            const errorEl = document.getElementById('login-error');
+            errorEl.textContent = '';
+            btn.textContent = 'Entrando...';
+            btn.disabled = true;
+
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const res = await fetch(`${API}/api/usuarios/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errorEl.textContent = data.mensaje || 'Error al iniciar sesión';
+                    btn.textContent = 'Entrar';
+                    btn.disabled = false;
+                    return;
+                }
+
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('nombre', data.nombre);
+                localStorage.setItem('email', data.email);
+                window.location.href = 'index.html';
+
+            } catch (err) {
+                errorEl.textContent = 'No se pudo conectar con el servidor';
+                btn.textContent = 'Entrar';
+                btn.disabled = false;
+            }
+        });
+
+        // REGISTRO
+        document.getElementById('form-registro').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-registro');
+            const errorEl = document.getElementById('registro-error');
+            errorEl.textContent = '';
+            btn.textContent = 'Creando cuenta...';
+            btn.disabled = true;
+
+            const nombre = document.getElementById('reg-nombre').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+
+            try {
+                const res = await fetch(`${API}/api/usuarios/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre, email, password })
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errorEl.textContent = data.mensaje || 'Error al crear la cuenta';
+                    btn.textContent = 'Crear Cuenta';
+                    btn.disabled = false;
+                    return;
+                }
+
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('nombre', data.nombre);
+                localStorage.setItem('email', data.email);
+                window.location.href = 'index.html';
+
+            } catch (err) {
+                errorEl.textContent = 'No se pudo conectar con el servidor';
+                btn.textContent = 'Crear Cuenta';
+                btn.disabled = false;
+            }
+        });
+    </script>
+
 </body>
 </html>

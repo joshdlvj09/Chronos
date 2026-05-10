@@ -8,10 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Betania+Patmos+In&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="shortcut icon" href="./src/img/logo_cine.jpeg" type="image/jpg">
-
 </head>
 <body>
 
@@ -19,9 +17,10 @@
         <h1>Chronos</h1>
         <nav>
             <ul>
-                <li><a href="/index.html">+ Agregar</a></li>
-                <li><a href="/listas.html">Mi Lista</a></li>
-                <li><a href="/perfil.html">Perfil</a></li>
+                <li><a href="index.html">+ Agregar</a></li>
+                <li><a href="listas.html">Mi Lista</a></li>
+                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="log_in.html" id="btn-cerrar-sesion" class="nav-logout">Cerrar Sesión</a></li>
             </ul>
         </nav>
     </header>
@@ -31,10 +30,24 @@
             <h2>Registrar Nuevo Contenido</h2>
             <form id="media-form">
                 <fieldset>
-                    
+
                     <div>
                         <label for="titulo">Título:</label>
                         <input type="text" id="titulo" name="titulo" placeholder="Nombre de la película, libro o serie">
+                    </div>
+
+                    <div>
+                        <label for="imagen">Portada:</label>
+                        <div class="imagen-input-group">
+                            <input type="text" id="imagen" name="imagen" placeholder="Pega aquí el link de la imagen...">
+                            <a href="https://www.google.com/imghp" target="_blank" class="btn-buscar-img" title="Buscar imagen en Google">
+                                <i class="fa-solid fa-magnifying-glass"></i> Buscar en Google
+                            </a>
+                        </div>
+                        <p class="imagen-hint">Busca la portada en Google Imágenes → clic derecho en la imagen → "Copiar dirección de imagen" → pégala aquí.</p>
+                        <div id="preview-container" class="preview-container" style="display:none;">
+                            <img id="preview-img" src="" alt="Vista previa de portada">
+                        </div>
                     </div>
 
                     <div class="radio-group">
@@ -45,7 +58,6 @@
                                 <span class="text">Película</span>
                             </label>
                         </div>
-
                         <div class="radio-option">
                             <input type="radio" id="serie" name="tipo" value="serie" class="hidden-radio">
                             <label for="serie" class="icon-label">
@@ -53,7 +65,6 @@
                                 <span class="text">Serie</span>
                             </label>
                         </div>
-                        
                         <div class="radio-option">
                             <input type="radio" id="libro" name="tipo" value="libro" class="hidden-radio">
                             <label for="libro" class="icon-label">
@@ -78,12 +89,93 @@
                         <textarea id="notes" name="notas" rows="4" placeholder="Escribe aquí tus comentarios..."></textarea>
                     </div>
 
-                    <button type="submit">Guardar en la lista</button>
+                    <p id="form-error" class="auth-error"></p>
+                    <p id="form-exito" class="auth-exito"></p>
+                    <button type="submit" id="btn-guardar">Guardar en la lista</button>
                 </fieldset>
             </form>
         </section>
     </main>
 
+    <script>
+        const API = 'https://backend-chronos.onrender.com';
+
+        if (!localStorage.getItem('token')) {
+            window.location.href = 'log_in.html';
+        }
+
+        // Cerrar sesión
+        document.getElementById('btn-cerrar-sesion').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('nombre');
+            localStorage.removeItem('email');
+            window.location.href = 'log_in.html';
+        });
+
+        // Preview de imagen al pegar URL
+        document.getElementById('imagen').addEventListener('input', function() {
+            const url = this.value.trim();
+            const container = document.getElementById('preview-container');
+            const img = document.getElementById('preview-img');
+            if (url) {
+                img.src = url;
+                img.onload = () => container.style.display = 'block';
+                img.onerror = () => container.style.display = 'none';
+            } else {
+                container.style.display = 'none';
+            }
+        });
+
+        // Guardar contenido
+        document.getElementById('media-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-guardar');
+            const errorEl = document.getElementById('form-error');
+            const exitoEl = document.getElementById('form-exito');
+            errorEl.textContent = '';
+            exitoEl.textContent = '';
+
+            const titulo = document.getElementById('titulo').value.trim();
+            const tipo = document.querySelector('input[name="tipo"]:checked')?.value;
+            const estado = document.getElementById('estado').value;
+            const notas = document.getElementById('notes').value.trim();
+            const imagen = document.getElementById('imagen').value.trim();
+
+            if (!titulo || !tipo || !estado) {
+                errorEl.textContent = 'Por favor completa todos los campos obligatorios.';
+                return;
+            }
+
+            btn.textContent = 'Guardando...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API}/api/media`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ titulo, tipo, estado, notas, imagen })
+                });
+                const data = await res.json();
+
+                if (!res.ok) {
+                    errorEl.textContent = data.mensaje || 'Error al guardar';
+                } else {
+                    exitoEl.textContent = `"${data.titulo}" guardado correctamente.`;
+                    document.getElementById('media-form').reset();
+                    document.getElementById('preview-container').style.display = 'none';
+                }
+            } catch (err) {
+                errorEl.textContent = 'No se pudo conectar con el servidor';
+            }
+
+            btn.textContent = 'Guardar en la lista';
+            btn.disabled = false;
+        });
+    </script>
 
 </body>
 </html>

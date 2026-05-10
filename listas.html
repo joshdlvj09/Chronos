@@ -8,10 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Betania+Patmos+In&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="shortcut icon" href="./src/img/logo_cine.jpeg" type="image/jpg">
-
 </head>
 <body>
 
@@ -19,73 +17,208 @@
         <h1>Chronos</h1>
         <nav>
             <ul>
-                <li><a href="/index.html">+ Agregar</a></li>
-                <li><a href="/listas.html">Mi Lista</a></li>
-                <li><a href="/perfil.html">Perfil</a></li>
+                <li><a href="index.html">+ Agregar</a></li>
+                <li><a href="listas.html">Mi Lista</a></li>
+                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="log_in.html" id="btn-cerrar-sesion" class="nav-logout">Cerrar Sesión</a></li>
             </ul>
         </nav>
     </header>
+
+    <!-- MODAL EDITAR -->
+    <div id="modal-editar" class="modal-overlay auth-hidden">
+        <div class="modal-box">
+            <h2>Editar Contenido</h2>
+            <form id="form-editar">
+                <fieldset>
+                    <div>
+                        <label for="edit-titulo">Título:</label>
+                        <input type="text" id="edit-titulo" placeholder="Título">
+                    </div>
+                    <div>
+                        <label for="edit-imagen">URL de Portada:</label>
+                        <input type="text" id="edit-imagen" placeholder="Link de la imagen...">
+                    </div>
+                    <div>
+                        <label for="edit-estado">Estado:</label>
+                        <select id="edit-estado">
+                            <option value="pendiente">Pendiente</option>
+                            <option value="viendo">En progreso</option>
+                            <option value="terminado">Terminado</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="edit-notas">Notas:</label>
+                        <textarea id="edit-notas" rows="3"></textarea>
+                    </div>
+                    <input type="hidden" id="edit-id">
+                    <button type="submit" id="btn-guardar-edicion">Guardar Cambios</button>
+                    <button type="button" id="btn-cancelar-edicion" class="btn-cancelar">Cancelar</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
 
     <main>
         <section class="lista-section">
             <div class="lista-header">
                 <h2>Contenido Guardado</h2>
                 <div class="filtros">
-                    <button class="filter-btn active">Todos</button>
-                    <button class="filter-btn">Películas</button>
-                    <button class="filter-btn">Series</button>
-                    <button class="filter-btn">Libros</button>
+                    <button class="filter-btn active" data-tipo="todos">Todos</button>
+                    <button class="filter-btn" data-tipo="pelicula">Películas</button>
+                    <button class="filter-btn" data-tipo="serie">Series</button>
+                    <button class="filter-btn" data-tipo="libro">Libros</button>
                 </div>
             </div>
-
             <div class="grid-lista" id="contenedor-lista">
-                <article class="media-card">
-                    <div class="card-badge status-viendo">En progreso</div>
-                    <div class="card-content">
-                        <img src="./src/img/Inception.jpeg" alt="Cine" class="card-icon">
-                        <div class="card-info">
-                            <h3>Inception</h3>
-                            <p>Revisar la escena del tótem al final.</p>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="action-btn edit">✏️</button>
-                        <button class="action-btn delete">🗑️</button>
-                    </div>
-                </article>
-
-                <article class="media-card">
-                    <div class="card-badge status-pendiente">Pendiente</div>
-                    <div class="card-content">
-                        <img src="./src/img/Cien años de soledad - Gabriel García Márquez.jpeg" alt="Libro" class="card-icon">
-                        <div class="card-info">
-                            <h3>Cien años de soledad</h3>
-                            <p>Clásico de García Márquez.</p>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="action-btn edit">✏️</button>
-                        <button class="action-btn delete">🗑️</button>
-                    </div>
-                </article>
-                <article class="media-card">
-                    <div class="card-badge status-pendiente">Terminado</div>
-                    <div class="card-content">
-                        <img src="./src/img/flash.jpg" alt="Libro" class="card-icon">
-                        <div class="card-info">
-                            <h3>The Flash</h3>
-                            <p>Mejor capitulo para mi: T2 Ep18</p>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="action-btn edit">✏️</button>
-                        <button class="action-btn delete">🗑️</button>
-                    </div>
-                </article>
+                <p class="lista-vacia">Cargando tu lista...</p>
             </div>
         </section>
     </main>
 
+    <script>
+        const API = 'https://backend-chronos.onrender.com';
+
+        if (!localStorage.getItem('token')) {
+            window.location.href = 'log_in.html';
+        }
+
+        const token = localStorage.getItem('token');
+        let todaLaLista = [];
+
+        // Cerrar sesión
+        document.getElementById('btn-cerrar-sesion').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('nombre');
+            localStorage.removeItem('email');
+            window.location.href = 'log_in.html';
+        });
+
+        // Cargar lista
+        async function cargarLista(tipo = 'todos') {
+            const contenedor = document.getElementById('contenedor-lista');
+            contenedor.innerHTML = '<p class="lista-vacia">Cargando...</p>';
+            try {
+                const url = tipo === 'todos' ? `${API}/api/media` : `${API}/api/media?tipo=${tipo}`;
+                const res = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                todaLaLista = data;
+                renderLista(data);
+            } catch (err) {
+                contenedor.innerHTML = '<p class="lista-vacia">Error al cargar la lista.</p>';
+            }
+        }
+
+        const iconosFallback = { pelicula: '🎬', serie: '📺', libro: '📖' };
+        const etiquetas = { pendiente: 'Pendiente', viendo: 'En progreso', terminado: 'Terminado' };
+
+        function renderLista(lista) {
+            const contenedor = document.getElementById('contenedor-lista');
+            if (!lista.length) {
+                contenedor.innerHTML = '<p class="lista-vacia">No tienes contenido aquí todavía.</p>';
+                return;
+            }
+            contenedor.innerHTML = lista.map(item => `
+                <article class="media-card" data-id="${item._id}">
+                    <span class="status-badge">${etiquetas[item.estado] || item.estado}</span>
+                    ${item.imagen
+                        ? `<img src="${item.imagen}" alt="${item.titulo}" class="card-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                           <div class="card-tipo-icon" style="display:none;">${iconosFallback[item.tipo] || '📄'}</div>`
+                        : `<div class="card-tipo-icon">${iconosFallback[item.tipo] || '📄'}</div>`
+                    }
+                    <div class="card-info">
+                        <h3>${item.titulo}</h3>
+                        <p>${item.notas || 'Sin notas.'}</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn edit" onclick="abrirEditar('${item._id}')">✏️</button>
+                        <button class="action-btn delete" onclick="eliminar('${item._id}')">🗑️</button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Filtros
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                cargarLista(this.dataset.tipo);
+            });
+        });
+
+        // Eliminar
+        async function eliminar(id) {
+            if (!confirm('¿Eliminar este elemento?')) return;
+            try {
+                const res = await fetch(`${API}/api/media/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) cargarLista();
+            } catch (err) {
+                alert('Error al eliminar');
+            }
+        }
+
+        // Abrir modal de edición
+        function abrirEditar(id) {
+            const item = todaLaLista.find(i => i._id === id);
+            if (!item) return;
+            document.getElementById('edit-id').value = item._id;
+            document.getElementById('edit-titulo').value = item.titulo;
+            document.getElementById('edit-imagen').value = item.imagen || '';
+            document.getElementById('edit-estado').value = item.estado;
+            document.getElementById('edit-notas').value = item.notas || '';
+            document.getElementById('modal-editar').classList.remove('auth-hidden');
+        }
+
+        document.getElementById('btn-cancelar-edicion').addEventListener('click', function() {
+            document.getElementById('modal-editar').classList.add('auth-hidden');
+        });
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modal-editar').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.add('auth-hidden');
+        });
+
+        // Guardar edición
+        document.getElementById('form-editar').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const titulo = document.getElementById('edit-titulo').value.trim();
+            const imagen = document.getElementById('edit-imagen').value.trim();
+            const estado = document.getElementById('edit-estado').value;
+            const notas = document.getElementById('edit-notas').value.trim();
+            const btn = document.getElementById('btn-guardar-edicion');
+            btn.textContent = 'Guardando...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API}/api/media/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ titulo, imagen, estado, notas })
+                });
+                if (res.ok) {
+                    document.getElementById('modal-editar').classList.add('auth-hidden');
+                    cargarLista();
+                }
+            } catch (err) {
+                alert('Error al actualizar');
+            }
+            btn.textContent = 'Guardar Cambios';
+            btn.disabled = false;
+        });
+
+        cargarLista();
+    </script>
 
 </body>
 </html>
